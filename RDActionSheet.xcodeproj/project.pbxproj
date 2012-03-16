@@ -1,0 +1,283 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A4FB2C581513B99000285450 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4FB2C571513B99000285450 /* UIKit.framework */; };
+		A4FB2C5A1513B99000285450 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4FB2C591513B99000285450 /* Foundation.framework */; };
+		A4FB2C5C1513B99000285450 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4FB2C5B1513B99000285450 /* CoreGraphics.framework */; };
+		A4FB2C621513B99000285450 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A4FB2C601513B99000285450 /* InfoPlist.strings */; };
+		A4FB2C641513B99000285450 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A4FB2C631513B99000285450 /* main.m */; };
+		A4FB2C681513B99000285450 /* RDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A4FB2C671513B99000285450 /* RDAppDelegate.m */; };
+		A4FB2C6B1513B99000285450 /* RDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4FB2C6A1513B99000285450 /* RDViewController.m */; };
+		A4FB2C6E1513B99000285450 /* RDViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A4FB2C6C1513B99000285450 /* RDViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A4FB2C531513B99000285450 /* RDActionSheet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RDActionSheet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4FB2C571513B99000285450 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		A4FB2C591513B99000285450 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A4FB2C5B1513B99000285450 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		A4FB2C5F1513B99000285450 /* RDActionSheet-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RDActionSheet-Info.plist"; sourceTree = "<group>"; };
+		A4FB2C611513B99000285450 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A4FB2C631513B99000285450 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		A4FB2C651513B99000285450 /* RDActionSheet-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RDActionSheet-Prefix.pch"; sourceTree = "<group>"; };
+		A4FB2C661513B99000285450 /* RDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDAppDelegate.h; sourceTree = "<group>"; };
+		A4FB2C671513B99000285450 /* RDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDAppDelegate.m; sourceTree = "<group>"; };
+		A4FB2C691513B99000285450 /* RDViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RDViewController.h; sourceTree = "<group>"; };
+		A4FB2C6A1513B99000285450 /* RDViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RDViewController.m; sourceTree = "<group>"; };
+		A4FB2C6D1513B99000285450 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RDViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A4FB2C501513B99000285450 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4FB2C581513B99000285450 /* UIKit.framework in Frameworks */,
+				A4FB2C5A1513B99000285450 /* Foundation.framework in Frameworks */,
+				A4FB2C5C1513B99000285450 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A4FB2C481513B99000285450 = {
+			isa = PBXGroup;
+			children = (
+				A4FB2C5D1513B99000285450 /* RDActionSheet */,
+				A4FB2C561513B99000285450 /* Frameworks */,
+				A4FB2C541513B99000285450 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A4FB2C541513B99000285450 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A4FB2C531513B99000285450 /* RDActionSheet.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4FB2C561513B99000285450 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A4FB2C571513B99000285450 /* UIKit.framework */,
+				A4FB2C591513B99000285450 /* Foundation.framework */,
+				A4FB2C5B1513B99000285450 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A4FB2C5D1513B99000285450 /* RDActionSheet */ = {
+			isa = PBXGroup;
+			children = (
+				A4FB2C661513B99000285450 /* RDAppDelegate.h */,
+				A4FB2C671513B99000285450 /* RDAppDelegate.m */,
+				A4FB2C691513B99000285450 /* RDViewController.h */,
+				A4FB2C6A1513B99000285450 /* RDViewController.m */,
+				A4FB2C6C1513B99000285450 /* RDViewController.xib */,
+				A4FB2C5E1513B99000285450 /* Supporting Files */,
+			);
+			path = RDActionSheet;
+			sourceTree = "<group>";
+		};
+		A4FB2C5E1513B99000285450 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				A4FB2C5F1513B99000285450 /* RDActionSheet-Info.plist */,
+				A4FB2C601513B99000285450 /* InfoPlist.strings */,
+				A4FB2C631513B99000285450 /* main.m */,
+				A4FB2C651513B99000285450 /* RDActionSheet-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A4FB2C521513B99000285450 /* RDActionSheet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A4FB2C711513B99000285450 /* Build configuration list for PBXNativeTarget "RDActionSheet" */;
+			buildPhases = (
+				A4FB2C4F1513B99000285450 /* Sources */,
+				A4FB2C501513B99000285450 /* Frameworks */,
+				A4FB2C511513B99000285450 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RDActionSheet;
+			productName = RDActionSheet;
+			productReference = A4FB2C531513B99000285450 /* RDActionSheet.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A4FB2C4A1513B99000285450 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = RD;
+				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "Red Davis";
+			};
+			buildConfigurationList = A4FB2C4D1513B99000285450 /* Build configuration list for PBXProject "RDActionSheet" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A4FB2C481513B99000285450;
+			productRefGroup = A4FB2C541513B99000285450 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A4FB2C521513B99000285450 /* RDActionSheet */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A4FB2C511513B99000285450 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4FB2C621513B99000285450 /* InfoPlist.strings in Resources */,
+				A4FB2C6E1513B99000285450 /* RDViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A4FB2C4F1513B99000285450 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4FB2C641513B99000285450 /* main.m in Sources */,
+				A4FB2C681513B99000285450 /* RDAppDelegate.m in Sources */,
+				A4FB2C6B1513B99000285450 /* RDViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A4FB2C601513B99000285450 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A4FB2C611513B99000285450 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		A4FB2C6C1513B99000285450 /* RDViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A4FB2C6D1513B99000285450 /* en */,
+			);
+			name = RDViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A4FB2C6F1513B99000285450 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A4FB2C701513B99000285450 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A4FB2C721513B99000285450 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RDActionSheet/RDActionSheet-Prefix.pch";
+				INFOPLIST_FILE = "RDActionSheet/RDActionSheet-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		A4FB2C731513B99000285450 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RDActionSheet/RDActionSheet-Prefix.pch";
+				INFOPLIST_FILE = "RDActionSheet/RDActionSheet-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A4FB2C4D1513B99000285450 /* Build configuration list for PBXProject "RDActionSheet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4FB2C6F1513B99000285450 /* Debug */,
+				A4FB2C701513B99000285450 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A4FB2C711513B99000285450 /* Build configuration list for PBXNativeTarget "RDActionSheet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4FB2C721513B99000285450 /* Debug */,
+				A4FB2C731513B99000285450 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A4FB2C4A1513B99000285450 /* Project object */;
+}
