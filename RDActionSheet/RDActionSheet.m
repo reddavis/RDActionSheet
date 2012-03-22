@@ -3,12 +3,11 @@
 //  LetterBoxd
 //
 //  Created by Red Davis on 12/01/2012.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Riot. All rights reserved.
 //
 
 #import "RDActionSheet.h"
 #import <QuartzCore/QuartzCore.h>
-#import "NSMutableArray+Reverse.h"
 
 @interface RDActionSheet ()
 
@@ -17,7 +16,7 @@
 
 - (void)setupButtons;
 - (void)setupBackground;
-- (void)setupBlackOutView;
+- (UIView *)buildBlackOutViewWithFrame:(CGRect)frame;
 
 - (UIButton *)buildButtonWithTitle:(NSString *)title;
 - (UIButton *)buildCancelButtonWithTitle:(NSString *)title;
@@ -32,8 +31,12 @@
 
 const CGFloat kButtonPadding = 10;
 const CGFloat kButtonHeight = 47;
-const CGFloat kButtonWidth = 300;
+
+const CGFloat kPortrainButtonWidth = 300;
+const CGFloat kLandscapeButtonWidth = 450;
+
 const CGFloat kActionSheetAnimationTime = 0.2;
+const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 @implementation RDActionSheet
 
@@ -47,6 +50,7 @@ const CGFloat kActionSheetAnimationTime = 0.2;
     
     self = [super init];
     if (self) {
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         self.buttons = [NSMutableArray array];
         self.opaque = YES;
     }
@@ -74,10 +78,7 @@ const CGFloat kActionSheetAnimationTime = 0.2;
         }
         
         va_end(argumentList);
-        
-        // Reverse buttons so they are placed in order
-        [self.buttons reverse];
-        
+                
         // Build cancel button
         UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
         [self.buttons insertObject:cancelButton atIndex:0];
@@ -92,21 +93,7 @@ const CGFloat kActionSheetAnimationTime = 0.2;
         if (destroyButtonTitle) {
             UIButton *destroyButton = [self buildDestroyButtonWithTitle:destroyButtonTitle];
             [self.buttons insertObject:destroyButton atIndex:1];
-        }
-        
-        // Set frame
-        CGFloat sheetHeight = [self calculateSheetHeight];
-        CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-        CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-        
-        self.frame = CGRectMake(0, screenHeight - sheetHeight, screenWidth, sheetHeight);
-        
-        [self setupButtons];
-        [self setupBackground];
-        [self setupBlackOutView];
-        
-        // Reverse the buttons again so their indexes are the same
-        [self.buttons reverse];
+        }        
     }
     
     return self;
@@ -114,11 +101,17 @@ const CGFloat kActionSheetAnimationTime = 0.2;
 
 #pragma mark - View setup
 
+- (void)layoutSubviews {
+    
+    [self setupBackground];
+    [self setupButtons];
+}
+
 - (void)setupBackground {
     
-    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetBackground.png"] stretchableImageWithLeftCapWidth:0.5 topCapHeight:0.5];
+    UIImage *backgroundImage = [[UIImage imageNamed:@"SheetBackground.png"] stretchableImageWithLeftCapWidth:0.5 topCapHeight:0];
     
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.frame.size.width, self.frame.size.height), YES, 1);
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(self.frame.size.width, self.frame.size.height), YES, 0);
     CGContextRef con = UIGraphicsGetCurrentContext();
     
     // Fill the context
@@ -133,9 +126,9 @@ const CGFloat kActionSheetAnimationTime = 0.2;
     CGFloat lineYAxis = self.frame.size.height - (kButtonPadding * 2 + kButtonHeight);
     
     CGContextBeginPath(con);
-    CGContextSetStrokeColorWithColor(con, [[UIColor blackColor] CGColor]);
+    CGContextSetStrokeColorWithColor(con, [UIColor blackColor].CGColor);
     CGContextSetLineWidth(con, 1);
-    CGContextMoveToPoint(con, 0, lineYAxis + 1);
+    CGContextMoveToPoint(con, 0, lineYAxis);
     CGContextAddLineToPoint(con, self.frame.size.width, lineYAxis);
     CGContextStrokePath(con);
     
@@ -143,7 +136,7 @@ const CGFloat kActionSheetAnimationTime = 0.2;
     UIColor *strokeColor = [UIColor colorWithRed:42/255.0 green:45/255.0 blue:48/255.0 alpha:1];
     CGContextSetStrokeColorWithColor(con, strokeColor.CGColor);
     CGContextSetLineWidth(con, 1);
-    CGContextMoveToPoint(con, 0, lineYAxis);
+    CGContextMoveToPoint(con, 0, lineYAxis + 1);
     CGContextAddLineToPoint(con, self.frame.size.width, lineYAxis + 1);
     CGContextStrokePath(con);
     
@@ -151,14 +144,19 @@ const CGFloat kActionSheetAnimationTime = 0.2;
     UIGraphicsEndImageContext();
     
     UIImageView *background = [[UIImageView alloc] initWithImage:finishedBackground];
+    background.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self insertSubview:background atIndex:0];
 }
 
-- (void)setupBlackOutView {
+- (UIView *)buildBlackOutViewWithFrame:(CGRect)frame {
     
-    self.blackOutView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].applicationFrame];
-    self.blackOutView.backgroundColor = [UIColor blackColor];
-    self.blackOutView.alpha = 0;
+    UIView *view = [[UIView alloc] initWithFrame:frame];
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.backgroundColor = [UIColor blackColor];
+    view.opaque = YES;
+    view.alpha = 0;
+    
+    return view;
 }
 
 - (void)setupButtons {
@@ -168,6 +166,16 @@ const CGFloat kActionSheetAnimationTime = 0.2;
     BOOL cancelButton = YES;
     for (UIButton *button in self.buttons) {
         
+        CGFloat buttonWidth;
+        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+        if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+            buttonWidth = kLandscapeButtonWidth;
+        } 
+        else {
+            buttonWidth = kPortrainButtonWidth;
+        }
+        
+        button.frame = CGRectMake(0, 0, buttonWidth, kButtonHeight);
         button.center = CGPointMake(self.center.x, yOffset);
         [self addSubview:button];
         
@@ -186,8 +194,6 @@ const CGFloat kActionSheetAnimationTime = 0.2;
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     [button addTarget:self action:@selector(buttonWasPressed:) forControlEvents:UIControlEventTouchUpInside];
     [button setTitle:title forState:UIControlStateNormal];
-    button.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    button.frame = CGRectMake(0, 0, kButtonWidth, kButtonHeight);
     button.accessibilityLabel = title;
     button.opaque = YES;
     
@@ -214,7 +220,6 @@ const CGFloat kActionSheetAnimationTime = 0.2;
     UIButton *button = [self buildButtonWithTitle:title];
     [button removeTarget:self action:@selector(buttonWasPressed:) forControlEvents:UIControlEventTouchUpInside];
     [button addTarget:self action:@selector(cancelActionSheet) forControlEvents:UIControlEventTouchUpInside];
-    button.frame = CGRectMake(0, 0, kButtonWidth, kButtonHeight);
     
     UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonDismiss.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
@@ -230,8 +235,6 @@ const CGFloat kActionSheetAnimationTime = 0.2;
 - (UIButton *)buildPrimaryButtonWithTitle:(NSString *)title {
     
     UIButton *button = [self buildButtonWithTitle:title];
-    button.frame = CGRectMake(0, 0, kButtonWidth, kButtonHeight);
-    
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonPrimary.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
@@ -249,8 +252,6 @@ const CGFloat kActionSheetAnimationTime = 0.2;
 - (UIButton *)buildDestroyButtonWithTitle:(NSString *)title {
     
     UIButton *button = [self buildButtonWithTitle:title];
-    button.frame = CGRectMake(0, 0, kButtonWidth, kButtonHeight);
-    
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     
     UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonDestroy.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
@@ -270,7 +271,7 @@ const CGFloat kActionSheetAnimationTime = 0.2;
 - (void)buttonWasPressed:(id)button {
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
-        [delegate actionSheet:self clickedButtonAtIndex:[self.buttons indexOfObject:button]];
+        [delegate actionSheet:self clickedButtonAtIndex:[self.buttons indexOfObject:button] - 1];
     }
     
     [self cancelActionSheet];
@@ -296,20 +297,18 @@ const CGFloat kActionSheetAnimationTime = 0.2;
 #pragma mark - Present action sheet
 
 - (void)showFrom:(UIView *)view {
-         
-    // Blackout layer
-    self.blackOutView.frame = view.bounds;
-    [view addSubview:self.blackOutView];
-    
-    // Action sheet
+        
     CGFloat startPosition = view.bounds.origin.y + view.bounds.size.height;
-    self.frame = CGRectMake(self.frame.origin.x, startPosition, self.frame.size.width, self.frame.size.height);
+    self.frame = CGRectMake(0, startPosition, view.bounds.size.width, [self calculateSheetHeight]);
     [view addSubview:self];
         
+    self.blackOutView = [self buildBlackOutViewWithFrame:view.bounds];
+    [view insertSubview:self.blackOutView belowSubview:self];
+                
     [UIView animateWithDuration:kActionSheetAnimationTime animations:^{    
         CGFloat endPosition = startPosition - self.frame.size.height;
         self.frame = CGRectMake(self.frame.origin.x, endPosition, self.frame.size.width, self.frame.size.height);
-        self.blackOutView.alpha = 0.6;
+        self.blackOutView.alpha = kBlackoutViewFadeInOpacity;
     }];    
 }
 
@@ -317,7 +316,7 @@ const CGFloat kActionSheetAnimationTime = 0.2;
 
 - (CGFloat)calculateSheetHeight {
     
-    return floorf(((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2));
+    return ((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2) + 4;
 }
 
 @end

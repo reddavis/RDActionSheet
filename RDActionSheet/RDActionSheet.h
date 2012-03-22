@@ -3,7 +3,7 @@
 //  LetterBoxd
 //
 //  Created by Red Davis on 12/01/2012.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Riot. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -23,8 +23,7 @@
 @end
 
 @protocol RDActionSheetDelegate
-- (void)actionSheet:(RDActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
-
 @optional
+- (void)actionSheet:(RDActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 - (void)actionSheetDidBecomeCancelled:(RDActionSheet *)actionSheet;
 @end

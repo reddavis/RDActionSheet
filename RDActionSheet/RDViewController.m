@@ -21,21 +21,18 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)viewDidUnload {
     
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
 }
 
-#pragma mark - Show action sheet action
+#pragma mark - Action sheet
 
 - (IBAction)showActionSheet:(id)sender {
     
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithDelegate:self cancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destroyButtonTitle:@"Destroy" otherButtonTitles:@"Email", @"Tweet", nil];
-    
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithDelegate:self cancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destroyButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
     [actionSheet showFrom:self.view];
 }
 
@@ -43,12 +40,12 @@
 
 - (void)actionSheet:(RDActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     
-    
+    NSLog(@"Pressed %i", buttonIndex);
 }
 
 - (void)actionSheetDidBecomeCancelled:(RDActionSheet *)actionSheet {
     
-    
+    NSLog(@"Sheet cancelled");
 }
 
 #pragma mark -
