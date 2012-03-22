@@ -14,7 +14,8 @@ This class makes it easy to create a custom UIActionSheet.
 
 ## Example
 
-https://gist.github.com/2159293
+Code: https://gist.github.com/2159293
+Video: http://taylorswift.ly/FEF3
 
 ## Getting Started
 
