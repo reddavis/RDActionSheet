@@ -148,17 +148,6 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     [self insertSubview:background atIndex:0];
 }
 
-- (UIView *)buildBlackOutViewWithFrame:(CGRect)frame {
-    
-    UIView *view = [[UIView alloc] initWithFrame:frame];
-    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    view.backgroundColor = [UIColor blackColor];
-    view.opaque = YES;
-    view.alpha = 0;
-    
-    return view;
-}
-
 - (void)setupButtons {
     
     CGFloat yOffset = self.frame.size.height - kButtonPadding - floorf(kButtonHeight/2);
@@ -188,6 +177,21 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         }
     }
 }
+
+#pragma mark - Blackout view builder
+
+- (UIView *)buildBlackOutViewWithFrame:(CGRect)frame {
+    
+    UIView *view = [[UIView alloc] initWithFrame:frame];
+    view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    view.backgroundColor = [UIColor blackColor];
+    view.opaque = YES;
+    view.alpha = 0;
+    
+    return view;
+}
+
+#pragma mark - Button builders
 
 - (UIButton *)buildButtonWithTitle:(NSString *)title {
     
