@@ -1,6 +1,6 @@
 //
 //  LBActionSheet.h
-//  LetterBoxd
+//  RDActionSheet
 //
 //  Created by Red Davis on 12/01/2012.
 //  Copyright (c) 2012 Riot. All rights reserved.
