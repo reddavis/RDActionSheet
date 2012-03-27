@@ -15,6 +15,7 @@ This class makes it easy to create a custom UIActionSheet.
 ## Example
 
 Delegate code example: https://gist.github.com/2159293
+
 Block code example: https://gist.github.com/2215684
 
 Video: http://taylorswift.ly/FEF3
