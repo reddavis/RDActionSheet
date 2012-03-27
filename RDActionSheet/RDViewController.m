@@ -34,6 +34,7 @@
     
     RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithCancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destroyButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
     actionSheet.callbackBlock = ^(RDActionSheetResult result, NSInteger buttonIndex) {
+        
         switch (result) {
             case RDActionSheetButtonResultSelected:
                 NSLog(@"Pressed %i", buttonIndex);
