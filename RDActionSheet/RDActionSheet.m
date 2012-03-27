@@ -1,6 +1,6 @@
 //
-//  LBActionSheet.m
-//  RDActionSheet
+//  RDActionSheet.m
+//  RDActionSheet v1.1.0
 //
 //  Created by Red Davis on 12/01/2012.
 //  Copyright (c) 2012 Riot. All rights reserved.
@@ -29,6 +29,7 @@
 
 @end
 
+
 const CGFloat kButtonPadding = 10;
 const CGFloat kButtonHeight = 47;
 
@@ -38,9 +39,12 @@ const CGFloat kLandscapeButtonWidth = 450;
 const CGFloat kActionSheetAnimationTime = 0.2;
 const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
+
 @implementation RDActionSheet
 
 @synthesize delegate;
+@synthesize callbackBlock;
+
 @synthesize buttons;
 @synthesize blackOutView;
 
@@ -60,10 +64,19 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 - (id)initWithDelegate:(NSObject<RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
     
-    self = [self init];
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destroyButtonTitle:destroyButtonTitle otherButtonTitles:otherButtonTitles];
     if (self) {
         self.delegate = aDelegate;
-                
+    }
+    
+    return self;
+}
+
+- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+    
+    self = [self init];
+    if (self) {
+        
         // Build normal buttons
         va_list argumentList;
         va_start(argumentList, otherButtonTitles);
@@ -73,12 +86,12 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
             
             UIButton *button = [self buildButtonWithTitle:argString];
             [self.buttons addObject:button];
-                        
+            
             argString = va_arg(argumentList, NSString *);
         }
         
         va_end(argumentList);
-                
+        
         // Build cancel button
         UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
         [self.buttons insertObject:cancelButton atIndex:0];
@@ -274,8 +287,15 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 - (void)buttonWasPressed:(id)button {
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
-        [delegate actionSheet:self clickedButtonAtIndex:[self.buttons indexOfObject:button] - 1];
+    NSInteger buttonIndex = [self.buttons indexOfObject:button] - 1;
+    
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetButtonResultSelected, buttonIndex);
+    }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
+            [delegate actionSheet:self clickedButtonAtIndex:buttonIndex];
+        }
     }
     
     [self cancelActionSheet];
@@ -293,9 +313,14 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         [self removeFromSuperview];
     }];
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheetDidBecomeCancelled:)]) {
-        [delegate actionSheetDidBecomeCancelled:self];
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetResultCancelled, -1);
     }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheetDidBecomeCancelled:)]) {
+            [delegate actionSheetDidBecomeCancelled:self];
+        }
+    }    
 }
 
 #pragma mark - Present action sheet
