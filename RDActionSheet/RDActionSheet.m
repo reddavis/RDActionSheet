@@ -294,7 +294,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
-            [delegate actionSheet:self clickedButtonAtIndex:buttonIndex];
+            [self.delegate actionSheet:self clickedButtonAtIndex:buttonIndex];
         }
     }
     
@@ -318,7 +318,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheetDidBecomeCancelled:)]) {
-            [delegate actionSheetDidBecomeCancelled:self];
+            [self.delegate actionSheetDidBecomeCancelled:self];
         }
     }    
 }
