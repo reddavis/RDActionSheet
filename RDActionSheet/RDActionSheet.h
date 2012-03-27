@@ -13,7 +13,7 @@
 
 typedef enum RDActionSheetResult {
     RDActionSheetButtonResultSelected,
-    RDActionSheetResultCancelled
+    RDActionSheetResultResultCancelled
 } RDActionSheetResult;
 
 typedef void(^CallbackBlock)(RDActionSheetResult result, NSInteger buttonIndex);

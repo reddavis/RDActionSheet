@@ -2,11 +2,11 @@
 
 Red Davis
 
-http://riothq.com
+Tweet me [@reddavis](http://twitter.com/reddavis)
 
-[@reddavis](http://twitter.com/reddavis)
+Email me at red@riothq.com
 
-red@riothq.com
+Hire me at http://riothq.com
 
 ## Overview
 
@@ -14,7 +14,8 @@ This class makes it easy to create a custom UIActionSheet.
 
 ## Example
 
-Code: https://gist.github.com/2159293
+Delegate code example: https://gist.github.com/2159293
+Block code example: https://gist.github.com/2215684
 
 Video: http://taylorswift.ly/FEF3
 

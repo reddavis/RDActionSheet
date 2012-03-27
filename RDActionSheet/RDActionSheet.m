@@ -314,7 +314,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     }];
     
     if (self.callbackBlock) {
-        self.callbackBlock(RDActionSheetResultCancelled, -1);
+        self.callbackBlock(RDActionSheetResultResultCancelled, -1);
     }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheetDidBecomeCancelled:)]) {

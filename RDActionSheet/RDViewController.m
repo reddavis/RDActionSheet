@@ -39,7 +39,7 @@
             case RDActionSheetButtonResultSelected:
                 NSLog(@"Pressed %i", buttonIndex);
                 break;
-            case RDActionSheetResultCancelled:
+            case RDActionSheetResultResultCancelled:
                 NSLog(@"Sheet cancelled");
         }
     };
