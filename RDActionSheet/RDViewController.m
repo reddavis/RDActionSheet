@@ -32,20 +32,17 @@
 
 - (IBAction)showActionSheet:(id)sender {
     
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithDelegate:self cancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destroyButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithCancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destroyButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
+    actionSheet.callbackBlock = ^(RDActionSheetResult result, NSInteger buttonIndex) {
+        switch (result) {
+            case RDActionSheetButtonResultSelected:
+                NSLog(@"Pressed %i", buttonIndex);
+                break;
+            case RDActionSheetResultCancelled:
+                NSLog(@"Sheet cancelled");
+        }
+    };
     [actionSheet showFrom:self.view];
-}
-
-#pragma mark - RDActionSheetDelegate
-
-- (void)actionSheet:(RDActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    
-    NSLog(@"Pressed %i", buttonIndex);
-}
-
-- (void)actionSheetDidBecomeCancelled:(RDActionSheet *)actionSheet {
-    
-    NSLog(@"Sheet cancelled");
 }
 
 #pragma mark -
