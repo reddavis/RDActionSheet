@@ -112,6 +112,37 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
+
+- (id)initWithCancelButtonTitleWithNSArray:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles {
+    
+    self = [self init];
+    if (self) {
+        
+               for (int x = 0; x<[otherButtonTitles count]; x++) {
+            UIButton *button = [self buildButtonWithTitle:[otherButtonTitles objectAtIndex:x]];
+            [self.buttons addObject:button];
+        }
+        // Build cancel button
+        UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
+        [self.buttons insertObject:cancelButton atIndex:0];
+        // Add primary button
+         if (primaryButtonTitle) {
+         UIButton *primaryButton = [self buildPrimaryButtonWithTitle:primaryButtonTitle];
+         [self.buttons addObject:primaryButton];
+         }
+         
+         // Add destroy button
+         if (destroyButtonTitle) {
+         UIButton *destroyButton = [self buildDestroyButtonWithTitle:destroyButtonTitle];
+         [self.buttons insertObject:destroyButton atIndex:1];
+         } 
+         
+    }
+    
+    return self;
+}
+
+
 #pragma mark - View setup
 
 - (void)layoutSubviews {
