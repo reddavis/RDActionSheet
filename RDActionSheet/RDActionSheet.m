@@ -270,7 +270,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
     
     UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
+    [button setBackgroundImage:touchBackgroundImage forState:UIControlEventTouchUpInside];
     
     button.titleLabel.layer.shadowColor = [UIColor whiteColor].CGColor;
     button.titleLabel.layer.shadowRadius = 0.0;
