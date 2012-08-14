@@ -16,13 +16,13 @@ typedef enum RDActionSheetResult {
     RDActionSheetResultResultCancelled
 } RDActionSheetResult;
 
-typedef void(^CallbackBlock)(RDActionSheetResult result, NSInteger buttonIndex);
+typedef void(^RDCallbackBlock)(RDActionSheetResult result, NSInteger buttonIndex);
 
 
 @interface RDActionSheet : UIView
 
 @property (nonatomic, unsafe_unretained) NSObject <RDActionSheetDelegate> *delegate;
-@property (nonatomic, copy) CallbackBlock callbackBlock;
+@property (nonatomic, copy) RDCallbackBlock callbackBlock;
 
 - (id)initWithDelegate:(NSObject <RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... __attribute__ ((deprecated));
 - (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...;
