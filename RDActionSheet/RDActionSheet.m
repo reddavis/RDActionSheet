@@ -10,7 +10,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 @interface RDActionSheet ()
-
+@property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) NSMutableArray *buttons;
 @property (nonatomic, strong) UIView *blackOutView;
 
@@ -48,6 +48,8 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 @synthesize buttons;
 @synthesize blackOutView;
 
+@synthesize scrollView;
+
 #pragma mark - Initialization
 
 - (id)init {
@@ -62,7 +64,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
-- (id)initWithDelegate:(NSObject<RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+- (id)initWithDelegate:(NSObject<RDActionSheetDelegate,UIScrollViewDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
     
     self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destroyButtonTitle:destroyButtonTitle otherButtonTitles:otherButtonTitles];
     if (self) {
@@ -77,7 +79,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     self = [self init];
     if (self) {
         
-        // Build normal buttons
+        // Build normal buttons[mArray getObjects:objects range:range];
         va_list argumentList;
         va_start(argumentList, otherButtonTitles);
         
@@ -95,18 +97,64 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         // Build cancel button
         UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
         [self.buttons insertObject:cancelButton atIndex:0];
+        /*
+         // Add primary button
+         if (primaryButtonTitle) {
+         UIButton *primaryButton = [self buildPrimaryButtonWithTitle:primaryButtonTitle];
+         [self.buttons addObject:primaryButton];
+         }
+         
+         // Add destroy button
+         if (destroyButtonTitle) {
+         UIButton *destroyButton = [self buildDestroyButtonWithTitle:destroyButtonTitle];
+         [self.buttons insertObject:destroyButton atIndex:1];
+         } 
+         */
+    }
+    
+    return self;
+}
+
+- (id)initWithCancelButtonTitleWithNSArray:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSArray *)otherButtonTitles {
+    
+    self = [self init];
+    if (self) {
+        // Build normal buttons[mArray getObjects:objects range:range];
+        //va_list argumentList;
+        //va_start(argumentList, otherButtonTitles);
         
-        // Add primary button
-        if (primaryButtonTitle) {
-            UIButton *primaryButton = [self buildPrimaryButtonWithTitle:primaryButtonTitle];
-            [self.buttons addObject:primaryButton];
+        //NSString *argString = otherButtonTitles;
+        for (int x = 0; x<[otherButtonTitles count]; x++) {
+            UIButton *button = [self buildButtonWithTitle:[otherButtonTitles objectAtIndex:x]];
+            [self.buttons addObject:button];
         }
-        
-        // Add destroy button
-        if (destroyButtonTitle) {
-            UIButton *destroyButton = [self buildDestroyButtonWithTitle:destroyButtonTitle];
-            [self.buttons insertObject:destroyButton atIndex:1];
-        }        
+        /*
+         while (argString != nil) {
+         
+         UIButton *button = [self buildButtonWithTitle:argString];
+         [self.buttons addObject:button];
+         
+         argString = va_arg(argumentList, NSString *);
+         }
+         
+         va_end(argumentList);
+         */
+        // Build cancel button
+        UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
+        [self.buttons insertObject:cancelButton atIndex:0];
+        /*
+         // Add primary button
+         if (primaryButtonTitle) {
+         UIButton *primaryButton = [self buildPrimaryButtonWithTitle:primaryButtonTitle];
+         [self.buttons addObject:primaryButton];
+         }
+         
+         // Add destroy button
+         if (destroyButtonTitle) {
+         UIButton *destroyButton = [self buildDestroyButtonWithTitle:destroyButtonTitle];
+         [self.buttons insertObject:destroyButton atIndex:1];
+         } 
+         */
     }
     
     return self;
@@ -222,7 +270,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
     
     UIImage *touchBackgroundImage = [[UIImage imageNamed:@"SheetButtonGenericTouch.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
-    [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
+    [button setBackgroundImage:touchBackgroundImage forState:UIControlEventTouchUpInside];
     
     button.titleLabel.layer.shadowColor = [UIColor whiteColor].CGColor;
     button.titleLabel.layer.shadowRadius = 0.0;
@@ -302,7 +350,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 - (void)cancelActionSheet {
-        
+    
     [UIView animateWithDuration:kActionSheetAnimationTime animations:^{
         
         CGFloat endPosition = self.frame.origin.y + self.frame.size.height;
@@ -324,21 +372,39 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 #pragma mark - Present action sheet
-
+- (void)scrollViewDidScroll:(UIScrollView *)scrollViewInstance {
+    if (scrollViewInstance.contentOffset.y > 60) {
+        [scrollViewInstance setContentOffset:CGPointMake(0, 60)];
+    }
+}
 - (void)showFrom:(UIView *)view {
-        
+    
     CGFloat startPosition = view.bounds.origin.y + view.bounds.size.height;
     self.frame = CGRectMake(0, startPosition, view.bounds.size.width, [self calculateSheetHeight]);
-    [view addSubview:self];
-        
+    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, startPosition, view.bounds.size.width, view.bounds.size.height)];
+    self.scrollView.bounces = NO;
+    self.scrollView.contentSize = CGSizeMake(view.bounds.size.width,[self calculateSheetHeight]);
+    [self.scrollView addSubview:self];
+    CGPoint bottomOffset = CGPointMake(0, self.scrollView.contentSize.height - self.scrollView.bounds.size.height);
+    [self.scrollView setContentOffset:bottomOffset animated:YES];
+    [self.scrollView bringSubviewToFront:self];
+    [view bringSubviewToFront:self.scrollView];
+    [view addSubview:self.scrollView];
+    
     self.blackOutView = [self buildBlackOutViewWithFrame:view.bounds];
-    [view insertSubview:self.blackOutView belowSubview:self];
-                
+    [view insertSubview:self.blackOutView belowSubview:self.scrollView];
+    
     [UIView animateWithDuration:kActionSheetAnimationTime animations:^{    
-        CGFloat endPosition = startPosition - self.frame.size.height;
+        CGFloat endPosition = startPosition - self.scrollView.frame.size.height;
         self.frame = CGRectMake(self.frame.origin.x, endPosition, self.frame.size.width, self.frame.size.height);
         self.blackOutView.alpha = kBlackoutViewFadeInOpacity;
-    }];    
+    }];   
+    
+    [UIView animateWithDuration:kActionSheetAnimationTime animations:^{    
+        CGFloat endPosition = startPosition - self.scrollView.frame.size.height;
+        self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x, endPosition, self.scrollView.frame.size.width, self.scrollView.frame.size.height);
+        self.blackOutView.alpha = kBlackoutViewFadeInOpacity;
+    }]; 
 }
 
 #pragma mark - Helpers
