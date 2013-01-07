@@ -32,9 +32,9 @@
 
 - (IBAction)showActionSheet:(id)sender {
     
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithCancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destroyButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Here's a title that is hopefully long enough to require multiple lines" cancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destructiveButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
+    
     actionSheet.callbackBlock = ^(RDActionSheetResult result, NSInteger buttonIndex) {
-        
         switch (result) {
             case RDActionSheetButtonResultSelected:
                 NSLog(@"Pressed %i", buttonIndex);
@@ -43,6 +43,7 @@
                 NSLog(@"Sheet cancelled");
         }
     };
+    
     [actionSheet showFrom:self.view];
 }
 
