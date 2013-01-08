@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NSMutableArray *buttons;
 @property (nonatomic, strong) UIView *blackOutView;
+@property (nonatomic, strong) UILabel *titleLabel;
 
 - (void)setupButtons;
 - (void)setupBackground;
@@ -33,7 +34,7 @@
 const CGFloat kButtonPadding = 10;
 const CGFloat kButtonHeight = 47;
 
-const CGFloat kPortrainButtonWidth = 300;
+const CGFloat kPortraitButtonWidth = 300;
 const CGFloat kLandscapeButtonWidth = 450;
 
 const CGFloat kActionSheetAnimationTime = 0.2;
@@ -62,9 +63,10 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
-- (id)initWithDelegate:(NSObject<RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+- (id)initWithDelegate:(NSObject<RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
     
-    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destroyButtonTitle:destroyButtonTitle otherButtonTitles:otherButtonTitles];
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
+    
     if (self) {
         self.delegate = aDelegate;
     }
@@ -72,7 +74,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
-- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destroyButtonTitle:(NSString *)destroyButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
     
     self = [self init];
     if (self) {
@@ -103,10 +105,21 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         }
         
         // Add destroy button
-        if (destroyButtonTitle) {
-            UIButton *destroyButton = [self buildDestroyButtonWithTitle:destroyButtonTitle];
+        if (destructiveButtonTitle) {
+            UIButton *destroyButton = [self buildDestroyButtonWithTitle:destructiveButtonTitle];
             [self.buttons insertObject:destroyButton atIndex:1];
         }        
+    }
+    
+    return self;
+}
+
+- (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+    
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
+    
+    if (self) {
+        _titleLabel = [self buildTitleLabelWithTitle:title];
     }
     
     return self;
@@ -117,6 +130,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 - (void)layoutSubviews {
     
     [self setupBackground];
+    [self setupTitle];
     [self setupButtons];
 }
 
@@ -174,7 +188,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
             buttonWidth = kLandscapeButtonWidth;
         } 
         else {
-            buttonWidth = kPortrainButtonWidth;
+            buttonWidth = kPortraitButtonWidth;
         }
         
         button.frame = CGRectMake(0, 0, buttonWidth, kButtonHeight);
@@ -184,11 +198,27 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         yOffset -= button.frame.size.height + kButtonPadding;
         
         // We draw a line above the cancel button so add an extra kButtonPadding
-        if (cancelButton == YES) {
+        if (cancelButton) {
             yOffset -= kButtonPadding;
             cancelButton = NO;
         }
     }
+}
+
+- (void)setupTitle {
+    
+    CGFloat labelWidth;
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+        labelWidth = kLandscapeButtonWidth;
+    }
+    else {
+        labelWidth = kPortraitButtonWidth;
+    }
+    
+    self.titleLabel.frame = CGRectMake((self.bounds.size.width - labelWidth) / 2, self.titleLabel.frame.origin.y, labelWidth, self.titleLabel.bounds.size.height);
+    
+    [self addSubview:self.titleLabel];
 }
 
 #pragma mark - Blackout view builder
@@ -205,6 +235,25 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 #pragma mark - Button builders
+
+- (UILabel *)buildTitleLabelWithTitle:(NSString *)title {
+    
+    CGSize newSize = [title sizeWithFont:[UIFont systemFontOfSize:13.0]
+                            constrainedToSize:CGSizeMake(300.0, NSIntegerMax)
+                                lineBreakMode:NSLineBreakByWordWrapping];
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10.0, 9.0, kPortraitButtonWidth, newSize.height + 5.0)];
+    label.backgroundColor = [UIColor clearColor];
+    label.font = [UIFont systemFontOfSize:13.0];
+    label.numberOfLines = 0;
+    label.text = title;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor whiteColor];
+    label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
+    label.shadowOffset = CGSizeMake(0.0, 1.0);
+    
+    return label;
+}
 
 - (UIButton *)buildButtonWithTitle:(NSString *)title {
     
@@ -345,7 +394,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 - (CGFloat)calculateSheetHeight {
     
-    return ((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2) + 4;
+    return ((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2) + self.titleLabel.bounds.size.height + 4;
 }
 
 @end
