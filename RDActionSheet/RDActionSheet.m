@@ -63,9 +63,9 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
-- (id)initWithDelegate:(NSObject<RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+- (id)initWithDelegate:(NSObject<RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSArray*)otherButtonTitles {
     
-    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles];
     
     if (self) {
         self.delegate = aDelegate;
@@ -74,25 +74,17 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
-- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSArray*)otherButtonTitles {
     
     self = [self init];
     if (self) {
         
         // Build normal buttons
-        va_list argumentList;
-        va_start(argumentList, otherButtonTitles);
-        
-        NSString *argString = otherButtonTitles;
-        while (argString != nil) {
+        for (NSString* title in otherButtonTitles) {
             
-            UIButton *button = [self buildButtonWithTitle:argString];
+            UIButton *button = [self buildButtonWithTitle:title];
             [self.buttons addObject:button];
-            
-            argString = va_arg(argumentList, NSString *);
         }
-        
-        va_end(argumentList);
         
         // Build cancel button
         UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
@@ -114,9 +106,9 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
-- (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+- (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSArray*)otherButtonTitles {
     
-    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles];
     
     if (self) {
         _titleLabel = [self buildTitleLabelWithTitle:title];
@@ -192,7 +184,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         }
         
         button.frame = CGRectMake(0, 0, buttonWidth, kButtonHeight);
-        button.center = CGPointMake(self.center.x, yOffset);
+        button.center = CGPointMake(self.frame.size.width/2, yOffset);
         [self addSubview:button];
         
         yOffset -= button.frame.size.height + kButtonPadding;
@@ -388,6 +380,21 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         self.frame = CGRectMake(self.frame.origin.x, endPosition, self.frame.size.width, self.frame.size.height);
         self.blackOutView.alpha = kBlackoutViewFadeInOpacity;
     }];    
+}
+
+-(void)showFrom:(UIView*)view inRect:(CGRect)rect {
+    CGFloat startPosition = rect.origin.y + rect.size.height;
+    self.frame = CGRectMake(rect.origin.x, startPosition, rect.size.width, [self calculateSheetHeight]);
+    [view addSubview:self];
+
+    self.blackOutView = [self buildBlackOutViewWithFrame:view.bounds];
+    [view insertSubview:self.blackOutView belowSubview:self];
+
+    [UIView animateWithDuration:kActionSheetAnimationTime animations:^{
+        CGFloat endPosition = startPosition - self.frame.size.height;
+        self.frame = CGRectMake(self.frame.origin.x, endPosition, self.frame.size.width, self.frame.size.height);
+        self.blackOutView.alpha = kBlackoutViewFadeInOpacity;
+    }];
 }
 
 #pragma mark - Helpers
