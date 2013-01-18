@@ -248,7 +248,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor whiteColor];
     label.shadowColor = [UIColor colorWithWhite:0 alpha:0.5];
-    label.shadowOffset = CGSizeMake(0.0, 1.0);
+    label.shadowOffset = CGSizeMake(0.0, -1.0);
     
     return label;
 }
