@@ -41,6 +41,8 @@ typedef void(^RDActionSheetCallbackBlock)(RDActionSheetCallbackType result, NSIn
 
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...;
 
+- (id)initWithTitle:(NSString *)title delegate:(NSObject <RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...;
+
 - (void)showFrom:(UIView *)view;
 
 - (void)cancelActionSheet;

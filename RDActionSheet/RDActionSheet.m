@@ -114,11 +114,21 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
     
+    self = [self initWithTitle:title delegate:nil cancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
+    
+    return self;
+}
+
+- (id)initWithTitle:(NSString *)title delegate:(NSObject <RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+    
     self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
     
-    if (self) {
-        _titleLabel = [self buildTitleLabelWithTitle:title];
-    }
+	if ([title length]) {
+		_titleLabel = [self buildTitleLabelWithTitle:title];
+	}
+	if (aDelegate) {
+		self.delegate = aDelegate;
+	}
     
     return self;
 }
