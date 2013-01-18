@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RDActionSheet.h"
 
-@interface RDViewController : UIViewController
+@interface RDViewController : UIViewController <RDActionSheetDelegate>
 
 @property (nonatomic, strong) IBOutlet UIButton *showActionSheetButton;
 

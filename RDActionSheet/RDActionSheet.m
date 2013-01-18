@@ -11,7 +11,6 @@
 
 @interface RDActionSheet ()
 
-@property (nonatomic, strong) NSMutableArray *buttons;
 @property (nonatomic, strong) UIView *blackOutView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
@@ -51,8 +50,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 #pragma mark - Initialization
 
-- (id)init {
-    
+- (id)init { 
     self = [super init];
     if (self) {
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
@@ -284,8 +282,6 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 - (UIButton *)buildCancelButtonWithTitle:(NSString *)title {
     
     UIButton *button = [self buildButtonWithTitle:title];
-    [button removeTarget:self action:@selector(buttonWasPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [button addTarget:self action:@selector(cancelActionSheet) forControlEvents:UIControlEventTouchUpInside];
     
     UIImage *backgroundImage = [[UIImage imageNamed:@"SheetButtonDismiss.png"] stretchableImageWithLeftCapWidth:9 topCapHeight:1];
     [button setBackgroundImage:backgroundImage forState:UIControlStateNormal];
@@ -332,14 +328,17 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return button;
 }
 
+- (NSString *)buttonTitleAtIndex:(NSInteger)buttonIndex {
+    return [[[self.buttons objectAtIndex:buttonIndex] titleLabel] text];
+}
+
 #pragma mark - Button actions
 
 - (void)buttonWasPressed:(id)button {
-    
-    NSInteger buttonIndex = [self.buttons indexOfObject:button] - 1;
+    NSInteger buttonIndex = [self.buttons indexOfObject:button];
     
     if (self.callbackBlock) {
-        self.callbackBlock(RDActionSheetButtonResultSelected, buttonIndex);
+        self.callbackBlock(RDActionSheetCallbackTypeClickedButtonAtIndex, buttonIndex, [[[self.buttons objectAtIndex:buttonIndex] titleLabel] text]);
     }
     else {
         if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
@@ -347,29 +346,41 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         }
     }
     
-    [self cancelActionSheet];
+    [self hideActionSheetWithButtonIndex:buttonIndex];
 }
 
-- (void)cancelActionSheet {
-        
+- (void)hideActionSheetWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex >= 0) {
+        if (self.callbackBlock) {
+            self.callbackBlock(RDActionSheetCallbackTypeWillDismissWithButtonIndex, buttonIndex, [[[self.buttons objectAtIndex:buttonIndex] titleLabel] text]);
+        }
+        else {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:willDismissWithButtonIndex:)]) {
+                [self.delegate actionSheet:self willDismissWithButtonIndex:buttonIndex];
+            }
+        }
+    }
     [UIView animateWithDuration:kActionSheetAnimationTime animations:^{
-        
         CGFloat endPosition = self.frame.origin.y + self.frame.size.height;
         self.frame = CGRectMake(self.frame.origin.x, endPosition, self.frame.size.width, self.frame.size.height);
         self.blackOutView.alpha = 0;
     } completion:^(BOOL finished) {
-        
+        if (buttonIndex >= 0) {
+            if (self.callbackBlock) {
+                self.callbackBlock(RDActionSheetCallbackTypeDidDismissWithButtonIndex, buttonIndex, [[[self.buttons objectAtIndex:buttonIndex] titleLabel] text]);
+            }
+            else {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:didDismissWithButtonIndex:)]) {
+                    [self.delegate actionSheet:self didDismissWithButtonIndex:buttonIndex];
+                }
+            }
+        }
         [self removeFromSuperview];
     }];
-    
-    if (self.callbackBlock) {
-        self.callbackBlock(RDActionSheetResultResultCancelled, -1);
-    }
-    else {
-        if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheetDidBecomeCancelled:)]) {
-            [self.delegate actionSheetDidBecomeCancelled:self];
-        }
-    }    
+}
+
+-(void)cancelActionSheet {
+    [self hideActionSheetWithButtonIndex:-1];
 }
 
 #pragma mark - Present action sheet
@@ -382,18 +393,37 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         
     self.blackOutView = [self buildBlackOutViewWithFrame:view.bounds];
     [view insertSubview:self.blackOutView belowSubview:self];
-                
-    [UIView animateWithDuration:kActionSheetAnimationTime animations:^{    
-        CGFloat endPosition = startPosition - self.frame.size.height;
-        self.frame = CGRectMake(self.frame.origin.x, endPosition, self.frame.size.width, self.frame.size.height);
-        self.blackOutView.alpha = kBlackoutViewFadeInOpacity;
-    }];    
+    
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetCallbackTypeWillPresentActionSheet, -1, nil);
+    }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(willPresentActionSheet:)]) {
+            [self.delegate willPresentActionSheet:self];
+        }
+    }
+    
+    [UIView animateWithDuration:kActionSheetAnimationTime
+                     animations:^{
+                         CGFloat endPosition = startPosition - self.frame.size.height;
+                         self.frame = CGRectMake(self.frame.origin.x, endPosition, self.frame.size.width, self.frame.size.height);
+                         self.blackOutView.alpha = kBlackoutViewFadeInOpacity;
+                     }
+                     completion:^(BOOL finished) {
+                         if (self.callbackBlock) {
+                             self.callbackBlock(RDActionSheetCallbackTypeDidPresentActionSheet, -1, nil);
+                         }
+                         else {
+                             if (self.delegate && [self.delegate respondsToSelector:@selector(didPresentActionSheet:)]) {
+                                 [self.delegate didPresentActionSheet:self];
+                             }
+                         }
+                     }];
 }
 
 #pragma mark - Helpers
 
 - (CGFloat)calculateSheetHeight {
-    
     return ((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2) + self.titleLabel.bounds.size.height + 4;
 }
 
