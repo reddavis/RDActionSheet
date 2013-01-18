@@ -424,7 +424,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 #pragma mark - Helpers
 
 - (CGFloat)calculateSheetHeight {
-    return ((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2) + self.titleLabel.bounds.size.height + 4;
+    return floorf((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2) + self.titleLabel.bounds.size.height + 4;
 }
 
 @end
