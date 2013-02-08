@@ -30,21 +30,58 @@
 
 #pragma mark - Action sheet
 
+#define shouldUseDelegateExample 1
+
 - (IBAction)showActionSheet:(id)sender {
     
     RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Here's a title that is hopefully long enough to require multiple lines" cancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destructiveButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
-    
-    actionSheet.callbackBlock = ^(RDActionSheetResult result, NSInteger buttonIndex) {
-        switch (result) {
-            case RDActionSheetButtonResultSelected:
-                NSLog(@"Pressed %i", buttonIndex);
-                break;
-            case RDActionSheetResultResultCancelled:
-                NSLog(@"Sheet cancelled");
-        }
-    };
-    
+    if (shouldUseDelegateExample) {
+        NSLog(@"Delegate callbacks enabled");
+        actionSheet.delegate = self;
+    } else {
+        NSLog(@"Block callbacks enabled");
+        actionSheet.callbackBlock = ^(RDActionSheetCallbackType type, NSInteger buttonIndex, NSString *buttonTitle) {
+            switch (type) {
+                case RDActionSheetCallbackTypeClickedButtonAtIndex:
+                    NSLog(@"RDActionSheetCallbackTypeClickedButtonAtIndex %d, title %@", buttonIndex, buttonTitle);
+                    break;
+                case RDActionSheetCallbackTypeDidDismissWithButtonIndex:
+                    NSLog(@"RDActionSheetCallbackTypeDidDismissWithButtonIndex %d, title %@", buttonIndex, buttonTitle);
+                    break;
+                case RDActionSheetCallbackTypeWillDismissWithButtonIndex:
+                    NSLog(@"RDActionSheetCallbackTypeWillDismissWithButtonIndex %d, title %@", buttonIndex, buttonTitle);
+                    break;
+                case RDActionSheetCallbackTypeDidPresentActionSheet:
+                    NSLog(@"RDActionSheetCallbackTypeDidPresentActionSheet");
+                    break;
+                case RDActionSheetCallbackTypeWillPresentActionSheet:
+                    NSLog(@"RDActionSheetCallbackTypeDidPresentActionSheet");
+                    break;
+            }
+        };
+    }    
     [actionSheet showFrom:self.view];
+}
+
+-(void)actionSheet:(RDActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSLog(@"didDismissWithButtonIndex %d", buttonIndex);
+}
+
+-(void)actionSheet:(RDActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSLog(@"willDismissWithButtonIndex %d", buttonIndex);
+}
+
+-(void)willPresentActionSheet:(RDActionSheet *)actionSheet {
+    NSLog(@"willPresentActionSheet");
+}
+
+-(void)didPresentActionSheet:(RDActionSheet *)actionSheet {
+    NSLog(@"didPresentActionSheet");
+}
+
+-(void)actionSheet:(RDActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSLog(@"clickedButtonAtIndex %d", buttonIndex);
+    NSLog(@"%@", [actionSheet buttonTitleAtIndex:buttonIndex]);
 }
 
 #pragma mark -
