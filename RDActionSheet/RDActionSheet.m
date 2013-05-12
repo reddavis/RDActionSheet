@@ -9,10 +9,13 @@
 #import "RDActionSheet.h"
 #import <QuartzCore/QuartzCore.h>
 
+
 @interface RDActionSheet ()
 
 @property (nonatomic, strong) UIView *blackOutView;
 @property (nonatomic, strong) UILabel *titleLabel;
+
+- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle firstOtherButtonTitle:(NSString *)firstOtherButtonTitle otherButtonTitlesList:(va_list)otherButtonsList;
 
 - (void)setupButtons;
 - (void)setupBackground;
@@ -61,37 +64,21 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     return self;
 }
 
-- (id)initWithDelegate:(NSObject<RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
-    
-    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
-    
-    if (self) {
-        self.delegate = aDelegate;
-    }
-    
-    return self;
-}
-
-- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle firstOtherButtonTitle:(NSString *)firstOtherButtonTitle otherButtonTitlesList:(va_list)otherButtonsList {
     
     self = [self init];
     if (self) {
         
         // Build normal buttons
-        va_list argumentList;
-        va_start(argumentList, otherButtonTitles);
-        
-        NSString *argString = otherButtonTitles;
+        NSString *argString = firstOtherButtonTitle;
         while (argString != nil) {
             
             UIButton *button = [self buildButtonWithTitle:argString];
             [self.buttons addObject:button];
             
-            argString = va_arg(argumentList, NSString *);
+            argString = va_arg(otherButtonsList, NSString *);
         }
-        
-        va_end(argumentList);
-        
+                
         // Build cancel button
         UIButton *cancelButton = [self buildCancelButtonWithTitle:cancelButtonTitle];
         [self.buttons insertObject:cancelButton atIndex:0];
@@ -106,29 +93,31 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
         if (destructiveButtonTitle) {
             UIButton *destroyButton = [self buildDestroyButtonWithTitle:destructiveButtonTitle];
             [self.buttons insertObject:destroyButton atIndex:1];
-        }        
+        }
     }
+    
+    return self;
+}
+
+- (id)initWithCancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
+    
+    va_list args;
+    va_start(args, otherButtonTitles);
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle firstOtherButtonTitle:otherButtonTitles otherButtonTitlesList:args];
+    va_end(args);
     
     return self;
 }
 
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
     
-    self = [self initWithTitle:title delegate:nil cancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
+    va_list args;
+    va_start(args, otherButtonTitles);
+    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle firstOtherButtonTitle:otherButtonTitles otherButtonTitlesList:args];
+    va_end(args);
     
-    return self;
-}
-
-- (id)initWithTitle:(NSString *)title delegate:(NSObject <RDActionSheetDelegate> *)aDelegate cancelButtonTitle:(NSString *)cancelButtonTitle primaryButtonTitle:(NSString *)primaryButtonTitle destructiveButtonTitle:(NSString *)destructiveButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... {
-    
-    self = [self initWithCancelButtonTitle:cancelButtonTitle primaryButtonTitle:primaryButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitles, nil];
-    
-	if ([title length]) {
-		_titleLabel = [self buildTitleLabelWithTitle:title];
-	}
-	if (aDelegate) {
-		self.delegate = aDelegate;
-	}
+    if (title)
+        self.titleLabel = [self buildTitleLabelWithTitle:title];
     
     return self;
 }

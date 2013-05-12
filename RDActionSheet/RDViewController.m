@@ -34,7 +34,7 @@
 
 - (IBAction)showActionSheet:(id)sender {
     
-    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Here's a title that is hopefully long enough to require multiple lines" cancelButtonTitle:@"Cancel" primaryButtonTitle:@"Save" destructiveButtonTitle:@"Destroy" otherButtonTitles:@"Tweet", nil];
+    RDActionSheet *actionSheet = [[RDActionSheet alloc] initWithTitle:@"Here's a title that is hopefully long enough to require multiple lines" cancelButtonTitle:@"Cancel" primaryButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"a", @"b", nil];
     if (shouldUseDelegateExample) {
         NSLog(@"Delegate callbacks enabled");
         actionSheet.delegate = self;
