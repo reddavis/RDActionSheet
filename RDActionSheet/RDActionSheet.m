@@ -180,7 +180,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     for (UIButton *button in self.buttons) {
         
         CGFloat buttonWidth;
-        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
         if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
             buttonWidth = kLandscapeButtonWidth;
         } 
@@ -205,7 +205,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 - (void)setupTitle {
     
     CGFloat labelWidth;
-    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
         labelWidth = kLandscapeButtonWidth;
     }
