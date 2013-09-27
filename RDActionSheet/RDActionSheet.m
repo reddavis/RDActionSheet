@@ -10,8 +10,9 @@
 #import <QuartzCore/QuartzCore.h>
 
 
-@interface RDActionSheet ()
+@interface RDActionSheet () <UIActionSheetDelegate>
 
+@property (nonatomic, weak) UIActionSheet *ios7actionSheet;
 @property (nonatomic, strong) UIView *blackOutView;
 @property (nonatomic, strong) UILabel *titleLabel;
 
@@ -42,6 +43,9 @@ const CGFloat kLandscapeButtonWidth = 450;
 const CGFloat kActionSheetAnimationTime = 0.2;
 const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
+const NSInteger kCancelButtonTag = 23;
+const NSInteger kDestructiveButtonTag = 25;
+const NSInteger kNormalButtonTag = 12;
 
 @implementation RDActionSheet
 
@@ -50,6 +54,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 @synthesize buttons;
 @synthesize blackOutView;
+@synthesize ios7actionSheet;
 
 #pragma mark - Initialization
 
@@ -125,6 +130,10 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 #pragma mark - View setup
 
 - (void)layoutSubviews {
+    
+    if(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+        return;
+    }
     
     [self setupBackground];
     [self setupTitle];
@@ -274,6 +283,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     button.titleLabel.layer.shadowRadius = 0.0;
     button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, 1.0);
     button.titleLabel.layer.shadowOpacity = 0.5;
+    button.tag = kNormalButtonTag;
     
     return button;
 }
@@ -289,6 +299,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     [button setBackgroundImage:touchBackgroundImage forState:UIControlStateHighlighted];
     
     button.titleLabel.layer.shadowOpacity = 0.3;
+    button.tag = kCancelButtonTag;
     
     return button;
 }
@@ -306,6 +317,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     
     button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
     button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, -1.0);
+    button.tag = kNormalButtonTag;
     
     return button;
 }
@@ -323,6 +335,7 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
     
     button.titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
     button.titleLabel.layer.shadowOffset = CGSizeMake(0.0, -1.0);
+    button.tag = kDestructiveButtonTag;
     
     return button;
 }
@@ -379,13 +392,56 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 }
 
 -(void)cancelActionSheet {
+    if(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+        [self.ios7actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+        return;
+    }
     [self hideActionSheetWithButtonIndex:-1];
 }
 
 #pragma mark - Present action sheet
 
 - (void)showFrom:(UIView *)view {
+    
+    if(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
         
+        NSInteger destructiveIndex = NSNotFound;
+        NSInteger cancelIndex = NSNotFound;
+        
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] init];
+        actionSheet.title = self.titleLabel.text;
+        
+        NSInteger index = 0;
+        for(UIButton *button in [self.buttons reverseObjectEnumerator]) {
+            switch (button.tag) {
+                case kDestructiveButtonTag:
+                    destructiveIndex = index;
+                    break;
+                case kCancelButtonTag:
+                    cancelIndex = index;
+                    break;
+                default:
+                    break;
+            }
+            [actionSheet addButtonWithTitle: [button titleForState:UIControlStateNormal]];
+            index++;
+        }
+        
+        if(destructiveIndex != NSNotFound)
+            actionSheet.destructiveButtonIndex = destructiveIndex;
+        
+        if(cancelIndex != NSNotFound)
+            actionSheet.cancelButtonIndex = cancelIndex;
+        
+        actionSheet.delegate = self;
+        [actionSheet showInView: view];
+        
+        [view addSubview: self];
+        
+        self.ios7actionSheet = actionSheet;
+        return;
+    }
+    
     CGFloat startPosition = view.bounds.origin.y + view.bounds.size.height;
     self.frame = CGRectMake(0, startPosition, view.bounds.size.width, [self calculateSheetHeight]);
     [view addSubview:self];
@@ -424,6 +480,73 @@ const CGFloat kBlackoutViewFadeInOpacity = 0.6;
 
 - (CGFloat)calculateSheetHeight {
     return floorf((kButtonHeight * self.buttons.count) + (self.buttons.count * kButtonPadding) + kButtonHeight/2) + self.titleLabel.bounds.size.height + 4;
+}
+
+#pragma mark - UIActionSheetDelegate methods for iOS7
+
+// Called when a button is clicked. The view will be automatically dismissed after this call returns
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    
+    NSInteger rdActionSheetIndex = [self.buttons count]-1-buttonIndex;
+    
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetCallbackTypeClickedButtonAtIndex, rdActionSheetIndex, [[[self.buttons objectAtIndex:rdActionSheetIndex] titleLabel] text]);
+    }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
+            [self.delegate actionSheet:self clickedButtonAtIndex:rdActionSheetIndex];
+        }
+    }
+}
+
+- (void)willPresentActionSheet:(UIActionSheet *)actionSheet {
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetCallbackTypeWillPresentActionSheet, -1, nil);
+    }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(willPresentActionSheet:)]) {
+            [self.delegate willPresentActionSheet:self];
+        }
+    }
+}
+
+- (void)didPresentActionSheet:(UIActionSheet *)actionSheet{
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetCallbackTypeDidPresentActionSheet, -1, nil);
+    }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didPresentActionSheet:)]) {
+            [self.delegate didPresentActionSheet:self];
+        }
+    }
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    NSInteger rdActionSheetIndex = [self.buttons count]-1-buttonIndex;
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetCallbackTypeWillDismissWithButtonIndex, rdActionSheetIndex, [[[self.buttons objectAtIndex:rdActionSheetIndex] titleLabel] text]);
+    }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:willDismissWithButtonIndex:)]) {
+            [self.delegate actionSheet:self willDismissWithButtonIndex:rdActionSheetIndex];
+        }
+    }
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    NSInteger rdActionSheetIndex = [self.buttons count]-1-buttonIndex;
+    if (self.callbackBlock) {
+        self.callbackBlock(RDActionSheetCallbackTypeDidDismissWithButtonIndex, rdActionSheetIndex, [[[self.buttons objectAtIndex:rdActionSheetIndex] titleLabel] text]);
+    }
+    else {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(actionSheet:didDismissWithButtonIndex:)]) {
+            [self.delegate actionSheet:self didDismissWithButtonIndex:rdActionSheetIndex];
+        }
+    }
+    
+    if(self.superview != nil) {
+        [self removeFromSuperview];
+    }
 }
 
 @end
