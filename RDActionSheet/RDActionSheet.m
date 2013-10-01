@@ -522,6 +522,8 @@ const NSInteger kNormalButtonTag = 12;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if(buttonIndex < 0)
+        return;
     NSInteger rdActionSheetIndex = [self.buttons count]-1-buttonIndex;
     if (self.callbackBlock) {
         self.callbackBlock(RDActionSheetCallbackTypeWillDismissWithButtonIndex, rdActionSheetIndex, [[[self.buttons objectAtIndex:rdActionSheetIndex] titleLabel] text]);
@@ -534,6 +536,8 @@ const NSInteger kNormalButtonTag = 12;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    if(buttonIndex < 0)
+        return;
     NSInteger rdActionSheetIndex = [self.buttons count]-1-buttonIndex;
     if (self.callbackBlock) {
         self.callbackBlock(RDActionSheetCallbackTypeDidDismissWithButtonIndex, rdActionSheetIndex, [[[self.buttons objectAtIndex:rdActionSheetIndex] titleLabel] text]);
