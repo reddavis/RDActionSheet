@@ -131,7 +131,7 @@ const NSInteger kNormalButtonTag = 12;
 
 - (void)layoutSubviews {
     
-    if(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+    if(YES || floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
         return;
     }
     
@@ -392,7 +392,7 @@ const NSInteger kNormalButtonTag = 12;
 }
 
 -(void)cancelActionSheet {
-    if(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+    if(YES || floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
         [self.ios7actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
         return;
     }
@@ -403,7 +403,7 @@ const NSInteger kNormalButtonTag = 12;
 
 - (void)showFrom:(UIView *)view {
     
-    if(floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
+    if(YES || floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1) {
         
         NSInteger destructiveIndex = NSNotFound;
         NSInteger cancelIndex = NSNotFound;
